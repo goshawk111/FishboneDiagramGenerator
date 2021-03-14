@@ -140,6 +140,7 @@ class DiagramView(StencilView):
         self.rect.pos = self.pos
         self.rect.size = self.size
 
+
 class MainApp(App):
     title = 'Fishbone Diagram Generator'
     icon = 'images/icon16.png'
