@@ -1,0 +1,158 @@
+
+import os
+import util.const as const
+
+from kivy.core.text import LabelBase, DEFAULT_FONT
+from kivy.resources import resource_add_path
+
+from generator.fishbone_generator import FishBoneGenerator
+from generator.fishbone import Pos
+from loader.xml_loader import XMLLoader
+from painter.diagram_painter import DiagramPainter
+from kivy.graphics import Color
+from kivy.graphics import Rectangle
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.logger import Logger
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.stencilview import StencilView
+from saver.pptx_saver import PPTXSaver
+from kivy.uix.image import Image
+
+const.DEG = 30
+const.VERTICAL_MARGIN = 60
+const.HORIZONTAL_MARGIN = 100
+const.HEIGHT = 30
+const.WIDTH = 100
+const.VERTICAL_BONE_ADD = 10
+
+const.DIAGRAM_X = 500
+const.DIAGRAM_Y = 400
+const.MAIN_BONE_WIDTH = 10
+const.SUB_BONE_COLOR = (.16, .26, .63)
+const.MAIN_BONE_TEXT_COLOR = (.46, .13, .16)
+
+
+class LoadDialog(FloatLayout):
+    load = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
+
+class SaveDialog(FloatLayout):
+    save = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+    text_input = ObjectProperty(None)
+
+
+class ToolBarButton(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def buttonClicked(self, id):
+        Logger.info(f'[{self.__class__.__name__}\t] {id} was clicked.')
+        if id == 'Open':
+            self.parent.parent.show_load()
+        if id == 'Export':
+            self.parent.parent.show_save()
+
+
+class ToolBar(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+class RootWidget(Widget):
+    diagram_view = ObjectProperty(None)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.painter = None
+
+    def save(self, path, filename):
+        pptx_saver = PPTXSaver(os.path.join(path, filename), self.painter)
+        pptx_saver.save()
+
+        self.dismiss_popup()
+
+    def show_load(self):
+        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Open Digaram",
+                            content=content, size_hint=(0.9, 0.9))
+        self._popup.open()
+
+    def show_save(self):
+        content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Export Digaram",
+                            content=content, size_hint=(0.9, 0.9))
+        self._popup.open()
+
+    def load(self, path, filename):
+        self.xml_loader = XMLLoader(os.path.join(path, filename[0]))
+        effect = self.xml_loader.get_effect()
+        Logger.info(f'[{self.__class__.__name__}\t] Effect = {effect}')
+
+        self.diagram_view.reset()
+
+        self.painter = DiagramPainter(self.diagram_view, self.xml_loader)
+        self.painter.draw()
+
+        self.dismiss_popup()
+
+    def dismiss_popup(self):
+        self._popup.dismiss()
+
+    def on_touch_down(self, touch):
+        touch.ud['x'] = touch.pos[0]
+        touch.ud['y'] = touch.pos[1]
+
+        return super().on_touch_down(touch)
+
+    def on_touch_move(self, touch):
+
+        dx = touch.pos[0] - touch.ud['x']
+        dy = - (touch.pos[1] - touch.ud['y'])
+
+        touch.ud['x'] = touch.pos[0]
+        touch.ud['y'] = touch.pos[1]
+
+        if self.painter is not None:
+            self.painter.redraw(dx, dy)
+
+        return super().on_touch_move(touch)
+
+
+class DiagramView(StencilView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def reset(self):
+        self.clear_widgets()
+        self.canvas.clear()
+        self.canvas.add(Color(rgb=[.9, .9, .9]))
+        self.rect = Rectangle(pos=self.pos, size=self.size)
+        self.canvas.add(self.rect)
+        self.bind(pos=self._update_rect, size=self._update_rect)
+
+    def _update_rect(self, instance, _):
+        self.rect.pos = self.pos
+        self.rect.size = self.size
+
+class MainApp(App):
+    title = 'Fishbone Diagram Generator'
+    icon = 'images/icon16.png'
+
+    def build(self):
+        if (os.path.exists('fonts/ipaexg.ttf')):
+            resource_add_path('fonts/')
+            LabelBase.register(DEFAULT_FONT, 'ipaexg.ttf')
+
+        widget = RootWidget()
+
+        return widget
+
+
+if __name__ == '__main__':
+    MainApp().run()
