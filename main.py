@@ -21,6 +21,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stencilview import StencilView
 from saver.pptx_saver import PPTXSaver
+from saver.svg_saver import SVGSaver
 from kivy.uix.image import Image
 
 const.DEG = 30
@@ -33,9 +34,12 @@ const.VERTICAL_BONE_ADD = 10
 const.DIAGRAM_X = 500
 const.DIAGRAM_Y = 400
 const.MAIN_BONE_WIDTH = 10
-const.SUB_BONE_COLOR = (.16, .26, .63)
+const.MAIN_SUB_BONE_COLOR = (.16, .26, .63)
 const.MAIN_BONE_TEXT_COLOR = (.46, .13, .16)
 
+class PopupSaveMenu(BoxLayout):
+    popup_close = ObjectProperty(None)
+    show_save = ObjectProperty(None)
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -57,7 +61,7 @@ class ToolBarButton(Button):
         if id == 'Open':
             self.parent.parent.show_load()
         if id == 'Export':
-            self.parent.parent.show_save()
+            self.parent.parent.popup_save_menu()
 
 
 class ToolBar(Widget):
@@ -71,11 +75,27 @@ class RootWidget(Widget):
         super().__init__(**kwargs)
         self.painter = None
 
-    def save(self, path, filename):
+    def popup_save_menu(self):
+        content = PopupSaveMenu(popup_close=self.popup_close_menu, show_save=self.show_save)
+        self._popup_menu = Popup(title='Save', content=content, size_hint=(0.5, 0.5), auto_dismiss=False)
+        self._popup_menu.open()
+
+    def popup_close_menu(self):
+        self._popup_menu.dismiss()
+
+    def save_pptx(self, path, filename):
         pptx_saver = PPTXSaver(os.path.join(path, filename), self.painter)
         pptx_saver.save()
 
         self.dismiss_popup()
+        self.popup_close_menu()
+
+    def save_svg(self, path, filename):
+        svg_saver = SVGSaver(os.path.join(path, filename), self.painter)
+        svg_saver.save()
+
+        self.dismiss_popup()
+        self.popup_close_menu()
 
     def show_load(self):
         content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
@@ -83,9 +103,12 @@ class RootWidget(Widget):
                             content=content, size_hint=(0.9, 0.9))
         self._popup.open()
 
-    def show_save(self):
-        content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
-        self._popup = Popup(title="Export Digaram",
+    def show_save(self, save_type):
+        if save_type == 'PowerPoint':
+            content = SaveDialog(save=self.save_pptx, cancel=self.dismiss_popup)
+        else:
+            content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)        
+        self._popup = Popup(title="Save Digaram",
                             content=content, size_hint=(0.9, 0.9))
         self._popup.open()
 

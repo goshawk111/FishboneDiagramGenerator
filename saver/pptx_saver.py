@@ -95,8 +95,8 @@ class PPTXSaver():
             self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 100,
             200, 200, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE, 20, self.fishbone.text, main_bone_text_color, True)
 
-        color = (int(const.SUB_BONE_COLOR[0] * 255), int(
-            const.SUB_BONE_COLOR[1] * 255), int(const.SUB_BONE_COLOR[2] * 255))
+        color = (int(const.MAIN_SUB_BONE_COLOR[0] * 255), int(
+            const.MAIN_SUB_BONE_COLOR[1] * 255), int(const.MAIN_SUB_BONE_COLOR[2] * 255))
 
         main_sub_bone_color = RGBColor(
             color[0], color[1], color[2])

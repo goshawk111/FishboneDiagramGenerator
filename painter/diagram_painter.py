@@ -84,7 +84,7 @@ class DiagramPainter():
             if bone.level == 1:
                 width = 3
                 Color(
-                    const.SUB_BONE_COLOR[0], const.SUB_BONE_COLOR[1], const.SUB_BONE_COLOR[2])
+                    const.MAIN_SUB_BONE_COLOR[0], const.MAIN_SUB_BONE_COLOR[1], const.MAIN_SUB_BONE_COLOR[2])
             else:
                 width = 1
                 Color(0, 0, 0)
@@ -115,7 +115,7 @@ class DiagramPainter():
 
         if bone.level == 1:
             size = 20
-            font_color = const.SUB_BONE_COLOR
+            font_color = const.MAIN_SUB_BONE_COLOR
             margin = 3
 
         else:
@@ -165,7 +165,7 @@ class DiagramPainter():
 
         with self.widget.canvas:
             Color(
-                const.SUB_BONE_COLOR[0], const.SUB_BONE_COLOR[1], const.SUB_BONE_COLOR[2])
+                const.MAIN_SUB_BONE_COLOR[0], const.MAIN_SUB_BONE_COLOR[1], const.MAIN_SUB_BONE_COLOR[2])
 
             p1 = self.get_pos(bone[0].x + dx, bone[0].y + dy)
             p2 = self.get_pos(bone[1].x + dx, bone[1].y + dy)

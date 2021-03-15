@@ -39,7 +39,7 @@
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-            filters: ['*.pptx']
+            filters: ['*.pptx','*.svg']
             path: './'
             on_selection: text_input.text = self.selection and self.selection[0] or ''
 
@@ -80,6 +80,24 @@
                 text: 'Open'
                 on_release: root.load(filechooser.path, filechooser.selection)
 
+<PopupSaveMenu>:
+    orientation: 'vertical'
+    Label:
+        text: 'Please select a save format.'
+        center: root.center
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            text: 'PowerPoint'
+            on_release: root.show_save('PowerPoint')
+        
+        Button:
+            text: 'SVG'
+            on_release: root.show_save('SVG')
+
+        Button:
+            text: 'Close'
+            on_release: root.popup_close()
 <RootWidget>:
     diagram_view: diagram_view
     ToolBar:
