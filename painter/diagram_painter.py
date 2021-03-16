@@ -60,11 +60,6 @@ class DiagramPainter():
         self.draw_main_bone(self.fishbone.main_bone, 0, 0)
 
     def redraw_sub_bones(self, index, bone, dx, dy):
-        # if len(self.sub_bone_text[index]) != 0:
-        #    for label in self.sub_bone_text[index]:
-        #        self.widget.remove_widget(label)
-        #    self.sub_bone_text[index].clear()
-
         if len(self.sub_bone_lines[index]) != 0:
             for line in self.sub_bone_lines[index]:
                 self.widget.canvas.remove(line)

@@ -39,6 +39,7 @@ Fishbone Diagram Generator is a tool that can automatically generate Fishbone Di
 ![Fishbone Diagram Sample](./images/sample.png)
  
 # Features
+* Supports automatic conversion to PNG files (* .png)
 * Supports automatic conversion to PowerPoint files (* .pptx)
 * Supports automatic conversion to SVG files (* .svg)
 
@@ -48,6 +49,7 @@ Fishbone Diagram Generator is a tool that can automatically generate Fishbone Di
 * Kivy 2.0.0
 * python-pptx 0.6.18
 * svgwrite 1.4.1
+* opencv-python 4.5.1.48
 * ipaexg.ttf ([IPAex Gothic](https://moji.or.jp/ipafont/))
 
 # Installation
@@ -60,6 +62,7 @@ env\Scripts\activate
 python -m pip install kivy[base] kivy_examples
 python -m pip install python-pptx
 python -m pip install svgwrite
+python -m pip install opencv-python  
 ```
 **Note:**  I recommend using virtualenv for Kivy.
 

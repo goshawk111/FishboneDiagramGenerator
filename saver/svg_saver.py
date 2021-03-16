@@ -29,17 +29,19 @@ class SVGSaver():
         self.offset_fishbone()
 
     def offset_fishbone(self):
-        offset_x = 0
-        offset_y = 0
+        min_x = 0
+        min_y = 0
+        max_x = 0
+        max_y = 0
 
         for sub_bone in self.fishbone.sub_bones:
-            if offset_x > sub_bone.rect.pos[0]:
-                offset_x = sub_bone.rect.pos[0]
-            if offset_y > sub_bone.rect.pos[1]:
-                offset_y = sub_bone.rect.pos[1]
+            if min_x > sub_bone.rect.pos[0]:
+                min_x = sub_bone.rect.pos[0]
+            if min_y > sub_bone.rect.pos[1]:
+                min_y = sub_bone.rect.pos[1]
 
-        dx = -offset_x + const.HORIZONTAL_MARGIN
-        dy = -offset_y + const.VERTICAL_MARGIN
+        dx = -min_x + const.HORIZONTAL_MARGIN
+        dy = -min_y + const.VERTICAL_MARGIN
 
         self.fishbone.main_bone[0] = self.fishbone.main_bone[0].offset(dx, dy)
         self.fishbone.main_bone[1] = self.fishbone.main_bone[1].offset(dx, dy)
@@ -47,8 +49,22 @@ class SVGSaver():
         for sub_bone in self.fishbone.sub_bones:
             sub_bone.offset(dx, dy)
 
+        for sub_bone in self.fishbone.sub_bones:
+            x = sub_bone.rect.pos[0] + sub_bone.rect.size[0]
+            y = sub_bone.rect.pos[1] + sub_bone.rect.size[1]
+            if max_x < x:
+                max_x = x
+            if max_y < y:
+                max_y = y
+
+        x = self.fishbone.main_bone[1].x + 400 + 50
+        if max_x < x:
+            max_x = x
+
+        self.size = (max_x, max_y)
+
     def save(self):
-        dwg = svgwrite.Drawing(self.filepath)
+        dwg = svgwrite.Drawing(self.filepath, size=self.size)
 
         bone_color = (int(const.MAIN_SUB_BONE_COLOR[0] * 255), int(
             const.MAIN_SUB_BONE_COLOR[1] * 255), int(const.MAIN_SUB_BONE_COLOR[2] * 255))
@@ -76,7 +92,7 @@ class SVGSaver():
             ' .sub_bone_text_style {font-size: 9px; line-height: 11px}'))
 
         self.add_text_area(dwg, self.fishbone.text, self.fishbone.main_bone[1].x + 50,
-                           self.fishbone.main_bone[1].y - 100, 200, 200, 'left', 'middle', 'main_bone_style')
+                           self.fishbone.main_bone[1].y - 100, 400, 200, 'left', 'middle', 'main_bone_style')
 
         index = 0
         side = ''

@@ -22,6 +22,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stencilview import StencilView
 from saver.pptx_saver import PPTXSaver
 from saver.svg_saver import SVGSaver
+from saver.png_saver import PNGSaver
 from kivy.uix.image import Image
 
 const.DEG = 30
@@ -60,7 +61,7 @@ class ToolBarButton(Button):
         Logger.info(f'[{self.__class__.__name__}\t] {id} was clicked.')
         if id == 'Open':
             self.parent.parent.show_load()
-        if id == 'Export':
+        if id == 'Save':
             self.parent.parent.popup_save_menu()
 
 
@@ -97,6 +98,13 @@ class RootWidget(Widget):
         self.dismiss_popup()
         self.popup_close_menu()
 
+    def save_png(self, path, filename):
+        png_saver = PNGSaver(os.path.join(path, filename), self.painter)
+        png_saver.save()
+
+        self.dismiss_popup()
+        self.popup_close_menu()
+
     def show_load(self):
         content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
         self._popup = Popup(title="Open Digaram",
@@ -106,6 +114,9 @@ class RootWidget(Widget):
     def show_save(self, save_type):
         if save_type == 'PowerPoint':
             content = SaveDialog(save=self.save_pptx, cancel=self.dismiss_popup)
+        
+        elif save_type == 'PNG':
+            content = SaveDialog(save=self.save_png, cancel=self.dismiss_popup)
         else:
             content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)        
         self._popup = Popup(title="Save Digaram",

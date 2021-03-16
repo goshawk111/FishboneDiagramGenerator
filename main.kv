@@ -27,7 +27,7 @@
         background_color: (.8, .8, .8, 1.0)
         background_normal: 'images/save1.png'
         background_down: 'images/save2.png'
-        on_release: self.buttonClicked("Export")
+        on_release: self.buttonClicked("Save")
 
 <DiagramView>:
 
@@ -39,7 +39,7 @@
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-            filters: ['*.pptx','*.svg']
+            filters: ['*.pptx','*.svg','*.png']
             path: './'
             on_selection: text_input.text = self.selection and self.selection[0] or ''
 
@@ -95,6 +95,9 @@
             text: 'SVG'
             on_release: root.show_save('SVG')
 
+        Button:
+            text: 'PNG'
+            on_release: root.show_save('PNG')
         Button:
             text: 'Close'
             on_release: root.popup_close()

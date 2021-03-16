@@ -21,6 +21,9 @@ class Pos():
         self.x = x
         self.y = y
 
+    def to_integer(self):
+        return Pos(int(self.x), int(self.y))
+
     def get_str(self):
         return '(' + str(self.x) + ',' + str(self.y) + ')'
 
@@ -84,6 +87,17 @@ class FishBone():
         print('level:', self.level, 'direction:', self.direction,
               'bone:', self.bone[0].get_str() + ',' + self.bone[1].get_str(), 'text:', self.text)
 
+    def to_integer(self):
+        self.bone[0] = self.bone[0].to_integer()
+        self.bone[1] = self.bone[1].to_integer()
+
+        for a in self.arrow:
+            a = a.to_integer()
+
+        for child in self.child_bones:
+            child.to_integer()
+
+
     def print_all_child(self):
         self.print_info()
         for child in self.child_bones:
@@ -124,7 +138,7 @@ class FishBone():
     def get_width(self):
         if self.direction == 'vertical':
             if self.level == 1:
-                return const.WIDTH * 2 - 5
+                return const.WIDTH * 3 - 5
             else:
                 return const.WIDTH - 5
         else:
