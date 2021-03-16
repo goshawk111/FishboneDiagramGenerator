@@ -88,7 +88,7 @@ python main.py
 
 2. Click the ![open button](./images/open1.png) ('Open' button) to load the XML file.
 
-3. Click the ![save button](./images/save1.png) ('Save' button) to export to PowerPoint file.
+3. Click the ![save button](./images/save1.png) ('Save' button) to export to image file.
 
 
 # Author
