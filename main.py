@@ -1,4 +1,6 @@
-
+"""
+Main module
+"""
 import os
 import util.const as const
 
@@ -24,6 +26,7 @@ from saver.pptx_saver import PPTXSaver
 from saver.svg_saver import SVGSaver
 from saver.png_saver import PNGSaver
 from kivy.uix.image import Image
+from kivy.config import Config
 
 const.DEG = 30
 const.VERTICAL_MARGIN = 60
@@ -38,27 +41,30 @@ const.MAIN_BONE_WIDTH = 10
 const.MAIN_SUB_BONE_COLOR = (.16, .26, .63)
 const.MAIN_BONE_TEXT_COLOR = (.46, .13, .16)
 
+
 class PopupSaveMenu(BoxLayout):
+    """ Save menu """
     popup_close = ObjectProperty(None)
     show_save = ObjectProperty(None)
 
+
 class LoadDialog(FloatLayout):
+    """ Load Dialog """
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
 
 class SaveDialog(FloatLayout):
+    """ Save Dialog """
     save = ObjectProperty(None)
     cancel = ObjectProperty(None)
     text_input = ObjectProperty(None)
 
 
 class ToolBarButton(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
+    """ ToolBar Button """
     def buttonClicked(self, id):
-        Logger.info(f'[{self.__class__.__name__}\t] {id} was clicked.')
+        Logger.info("[%s\t] %s was clicked.", self.__class__.__name__, id)
         if id == 'Open':
             self.parent.parent.show_load()
         if id == 'Save':
@@ -66,15 +72,19 @@ class ToolBarButton(Button):
 
 
 class ToolBar(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    """ ToolBar Widget """
 
 
 class RootWidget(Widget):
+    """ Root Widget """
     diagram_view = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.painter = None
+        self._popup_menu = None
+        self._popup = None
+        self.xml_loader = None
 
     def popup_save_menu(self):
         content = PopupSaveMenu(popup_close=self.popup_close_menu, show_save=self.show_save)
@@ -114,11 +124,13 @@ class RootWidget(Widget):
     def show_save(self, save_type):
         if save_type == 'PowerPoint':
             content = SaveDialog(save=self.save_pptx, cancel=self.dismiss_popup)
-        
+
         elif save_type == 'PNG':
             content = SaveDialog(save=self.save_png, cancel=self.dismiss_popup)
+
         else:
-            content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)        
+            content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)   
+
         self._popup = Popup(title="Save Digaram",
                             content=content, size_hint=(0.9, 0.9))
         self._popup.open()
@@ -126,8 +138,7 @@ class RootWidget(Widget):
     def load(self, path, filename):
         self.xml_loader = XMLLoader(os.path.join(path, filename[0]))
         effect = self.xml_loader.get_effect()
-        Logger.info(f'[{self.__class__.__name__}\t] Effect = {effect}')
-
+        Logger.info("[%s\t] Effect = %s", self.__class__.__name__, effect)
         self.diagram_view.reset()
 
         self.painter = DiagramPainter(self.diagram_view, self.xml_loader)
@@ -159,8 +170,10 @@ class RootWidget(Widget):
 
 
 class DiagramView(StencilView):
+    """ Widget to display Diagram """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.rect = None
 
     def reset(self):
         self.clear_widgets()
@@ -176,13 +189,16 @@ class DiagramView(StencilView):
 
 
 class MainApp(App):
+    """ Main App """
     title = 'Fishbone Diagram Generator'
     icon = 'images/icon16.png'
 
     def build(self):
-        if (os.path.exists('fonts/ipaexg.ttf')):
+        if os.path.exists('fonts/ipaexg.ttf'):
             resource_add_path('fonts/')
             LabelBase.register(DEFAULT_FONT, 'ipaexg.ttf')
+
+        Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
         widget = RootWidget()
 

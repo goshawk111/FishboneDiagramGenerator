@@ -1,3 +1,6 @@
+"""
+Module for exporting PNG files
+"""
 import copy
 import cv2
 import os
@@ -11,6 +14,7 @@ sys.path.append('../util')
 
 
 class PNGSaver():
+    """ Class for PNG file export """
     def __init__(self, filepath, painter):
         self.filepath = filepath
         self.fishbone = copy.deepcopy(painter.fishbone)
@@ -172,7 +176,7 @@ class PNGSaver():
         imgPIL = Image.fromarray(self.img)
         draw = ImageDraw.Draw(imgPIL)
 
-        if (os.path.exists('fonts/ipaexg.ttf')):
+        if os.path.exists('fonts/ipaexg.ttf'):
             fontPIL = ImageFont.truetype(font='fonts/ipaexg.ttf', size=size)
         else:
             fontPIL = ImageFont.truetype(font='Roboto-Regular.ttf', size=size)

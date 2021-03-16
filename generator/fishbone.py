@@ -1,3 +1,6 @@
+"""
+Fishbone definition module
+"""
 import math
 import util.const as const
 import sys
@@ -8,6 +11,7 @@ sys.path.append('../util')
 
 
 class Rect():
+    """ Rectangle definition class """
     def __init__(self, x, y, w, h):
         self.pos = [x, y]
         self.size = [w, h]
@@ -17,6 +21,7 @@ class Rect():
 
 
 class Pos():
+    """ Position definition class """
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -44,6 +49,7 @@ class Pos():
 
 
 class FishBone():
+    """ FishBone definition class """
     def __init__(self, parent):
         if parent is None:
             self.level = 1

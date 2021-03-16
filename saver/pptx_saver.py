@@ -1,3 +1,6 @@
+"""
+Module for exporting PPTX files
+"""
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
@@ -14,6 +17,7 @@ sys.path.append('../util')
 
 
 class PPTXSaver():
+    """ Class for PPTX file export """
     def __init__(self, filepath, painter):
         self.filepath = filepath
         self.fishbone = painter.fishbone

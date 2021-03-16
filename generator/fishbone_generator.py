@@ -1,4 +1,7 @@
 
+"""
+Fishbone generation module
+"""
 import sys
 sys.path.append('../util')
 sys.path.append('./generator')
@@ -12,12 +15,17 @@ import math
 
 
 class FishBoneGenerator():
+    """ Fishbone generation class """
     def __init__(self, xml_loader):
         self.xml_loader = xml_loader
         self.main_bone = [Pos(0, 0), Pos(0, 0)]
         self.sub_bones = []
         self.is_create = False
         self.text = xml_loader.get_effect()
+        self.horizontal_min_x = 0
+        self.vertical_min_y = 0
+        self.min_x = 0
+        self.min_y = 0
 
     def create(self):
         root = self.xml_loader.get_factor()

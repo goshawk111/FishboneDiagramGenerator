@@ -1,3 +1,6 @@
+"""
+Module for exporting SVG files
+"""
 import svgwrite
 import math
 import copy
@@ -7,6 +10,7 @@ sys.path.append('../util')
 
 
 class ForeignObject(svgwrite.base.BaseElement, svgwrite.mixins.Transform, svgwrite.container.Presentation):
+    """ ForeignObject compatible class """
     elementname = 'foreignObject'
 
     def __init__(self, obj, **extra):
@@ -23,6 +27,7 @@ svgwrite.elementfactory.factoryelements['foreignObject'] = ForeignObject
 
 
 class SVGSaver():
+    """ Class for SVG file export """
     def __init__(self, filepath, painter):
         self.filepath = filepath
         self.fishbone = copy.deepcopy(painter.fishbone)

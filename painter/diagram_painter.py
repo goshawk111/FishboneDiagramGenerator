@@ -1,3 +1,6 @@
+"""
+Diagram drawing module
+"""
 import util.const as const
 from generator.fishbone_generator import FishBoneGenerator
 from generator.fishbone import Pos
@@ -13,6 +16,7 @@ sys.path.append('../util')
 
 
 class DiagramPainter():
+    """ Diagram drawing class """
     def __init__(self, widget, xml_loader):
         self.widget = widget
         self.xml_loader = xml_loader
