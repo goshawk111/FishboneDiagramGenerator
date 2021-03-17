@@ -4,9 +4,7 @@ Module for exporting SVG files
 import svgwrite
 import math
 import copy
-import util.const as const
-import sys
-sys.path.append('../util')
+import fishbone_diagram_generator.const as const
 
 
 class ForeignObject(svgwrite.base.BaseElement, svgwrite.mixins.Transform, svgwrite.container.Presentation):

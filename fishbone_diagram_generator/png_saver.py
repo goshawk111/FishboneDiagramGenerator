@@ -8,10 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import numpy as np
 import math
-import sys
-import util.const as const
-sys.path.append('../util')
-
+import fishbone_diagram_generator.const as const
 
 class PNGSaver():
     """ Class for PNG file export """
@@ -176,8 +173,8 @@ class PNGSaver():
         imgPIL = Image.fromarray(self.img)
         draw = ImageDraw.Draw(imgPIL)
 
-        if os.path.exists('fonts/ipaexg.ttf'):
-            fontPIL = ImageFont.truetype(font='fonts/ipaexg.ttf', size=size)
+        if os.path.exists('fishbone_diagram_generator/fonts/ipaexg.ttf'):
+            fontPIL = ImageFont.truetype(font='fishbone_diagram_generator/fonts/ipaexg.ttf', size=size)
         else:
             fontPIL = ImageFont.truetype(font='Roboto-Regular.ttf', size=size)
 

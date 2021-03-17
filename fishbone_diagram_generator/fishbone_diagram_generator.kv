@@ -1,0 +1,122 @@
+#:kivy 2.0.0
+# main.kv
+
+<ToolBarButton>:
+    size: 32, 32
+
+<ToolBar>:
+    end: True
+    canvas.before:
+        Color:
+            rgba: (.85, .85, .85, 1.0)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ToolBarButton:
+        center: 24, root.center_y
+        background_normal: ''
+        background_color: (.8, .8, .8, 1.0)
+        background_normal: 'images/open1.png'
+        background_down: 'images/open2.png'
+        on_release: self.buttonClicked("Open")
+
+    ToolBarButton:
+        center: 24 + 10 + 32 , root.center_y
+        background_normal: ''
+        background_color: (.8, .8, .8, 1.0)
+        background_normal: 'images/save1.png'
+        background_down: 'images/save2.png'
+        on_release: self.buttonClicked("Save")
+
+<DiagramView>:
+
+<SaveDialog>:
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ['*.pptx','*.svg','*.png']
+            path: './'
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        FileChooserListView:
+            id: filechooser
+            filters: ['*.xml']
+            path: './'
+        BoxLayout:
+            size_hint_y : None
+            height : 30
+            Button:
+                text: 'Cancel'
+                on_release: root.cancel()
+            Button:
+                text: 'Open'
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<PopupSaveMenu>:
+    orientation: 'vertical'
+    Label:
+        text: 'Please select a save format.'
+        center: root.center
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            text: 'PowerPoint'
+            on_release: root.show_save('PowerPoint')
+        
+        Button:
+            text: 'SVG'
+            on_release: root.show_save('SVG')
+
+        Button:
+            text: 'PNG'
+            on_release: root.show_save('PNG')
+        Button:
+            text: 'Close'
+            on_release: root.popup_close()
+<RootWidget>:
+    diagram_view: diagram_view
+    ToolBar:
+        id: tool_bar
+        pos: root.pos[0], root.height-40
+        size: root.width, 40
+    DiagramView:
+        canvas:
+            Color:
+                rgb: .95,.95,.95
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        id: diagram_view
+        pos: 0,0
+        size: root.width, root.height-40
+        Image:
+            source: 'images/logo.png'
+            size: (root.width, root.height)

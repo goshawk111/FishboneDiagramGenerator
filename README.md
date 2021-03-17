@@ -1,4 +1,4 @@
-![Fishbone Diagram Generator](./images/logo.png)
+![Fishbone Diagram Generator](./fishbone_diagram_generator/images/logo.png)
 # Fishbone Diagram Generator
  
 Fishbone Diagram Generator is a tool that can automatically generate Fishbone Diagram written in XML.
@@ -36,7 +36,7 @@ Fishbone Diagram Generator is a tool that can automatically generate Fishbone Di
 </Diagram>
 ```
 ## Fishbone Diagram
-![Fishbone Diagram Sample](./images/sample.png)
+![Fishbone Diagram Sample](./fishbone_diagram_generator/images/sample.png)
  
 # Features
 * Supports automatic conversion to PNG files (* .png)
@@ -72,8 +72,9 @@ To support Japanese, download the [IPA font](https://moji.or.jp/ipafont/ipafontd
 
 ```bash
 .
-├── fonts
-|    └── ipaexg.ttf
+├── fishbone_diagram_generator
+|     └── fonts
+|           └── ipaexg.ttf
 └── README.md
 ```
 
@@ -82,13 +83,13 @@ To support Japanese, download the [IPA font](https://moji.or.jp/ipafont/ipafontd
 ```bash
 cd [Install Directory]
 env\Scripts\activate
-python main.py
+python -m fishbone_diagram_generator
 ```
 1. Write the Fishbone Diagram in XML.
 
-2. Click the ![open button](./images/open1.png) ('Open' button) to load the XML file.
+2. Click the ![open button](./fishbone_diagram_generator/images/open1.png) ('Open' button) to load the XML file.
 
-3. Click the ![save button](./images/save1.png) ('Save' button) to export to image file.
+3. Click the ![save button](./fishbone_diagram_generator/images/save1.png) ('Save' button) to export to image file.
 
 
 # Author
