@@ -71,7 +71,6 @@ class FishBoneGenerator():
             for sub_bone in self.sub_bones:
                 sub_bone.mirror_x(origin_x)
 
-
     def find_horizontal_min_x(self, bone):
         if bone.direction == 'horizontal':
             if bone.bone[0].x < self.horizontal_min_x:
@@ -250,7 +249,7 @@ class FishBoneGenerator():
         self.add_vertical_bone(sub_bone)
         self.update_rect(sub_bone)
         self.update_arrow(sub_bone)
-        
+
         # sub_bone.print_all_child()
 
         return sub_bone

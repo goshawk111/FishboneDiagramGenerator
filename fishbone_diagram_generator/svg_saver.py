@@ -147,11 +147,11 @@ class SVGSaver():
 
                 if self.fishbone.direction == 'left':
                     dx = -dx
-                
+
                 self.add_text_area(
                     dwg, sub_bone.text,
                     sub_bone.bone[0].x - sub_bone.get_width() / 2,
-                    sub_bone.bone[0].y, sub_bone.get_width(), const.VERTICAL_MARGIN,  'center', 'top', 'sub_bone_style')
+                    sub_bone.bone[0].y, sub_bone.get_width(), const.VERTICAL_MARGIN, 'center', 'top', 'sub_bone_style')
 
             dwg.add(dwg.line((sub_bone.bone[0].x, sub_bone.bone[0].y), (
                     sub_bone.bone[1].x - dx, sub_bone.bone[1].y - dy),
@@ -206,7 +206,7 @@ class SVGSaver():
                     ), const.VERTICAL_MARGIN, 'right', 'top', 'sub_bone_text_style')
                 else:
                     self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
-                    ), const.VERTICAL_MARGIN, 'left', 'top', 'sub_bone_text_style')                    
+                    ), const.VERTICAL_MARGIN, 'left', 'top', 'sub_bone_text_style')
             else:
                 if self.fishbone.direction == 'left':
                     self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN, bone.get_width(

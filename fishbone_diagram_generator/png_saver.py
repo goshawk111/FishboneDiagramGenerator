@@ -166,7 +166,7 @@ class PNGSaver():
     def add_bone_text(self, bone, side):
         if bone.direction == 'vertical':
             if side == 'up':
-                self.add_text_area(bone.text, bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y - const.VERTICAL_MARGIN - 5, bone.get_width(
+                self.add_text_area(bone.text, bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y - const.VERTICAL_MARGIN, bone.get_width(
                 ), const.VERTICAL_MARGIN, 'center', 'bottom', 10, (0, 0, 0))
             else:
                 self.add_text_area(bone.text, bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y + 5, bone.get_width(

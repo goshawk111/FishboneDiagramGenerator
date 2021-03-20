@@ -48,12 +48,12 @@ class PPTXSaver():
                 ), const.VERTICAL_MARGIN, PP_ALIGN.CENTER, MSO_ANCHOR.TOP, font_size, bone.text, font_color)
         else:
             if side == 'up':
-                
+
                 if self.fishbone.direction == 'left':
                     self.add_textbox(slide, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
                     ), const.VERTICAL_MARGIN, PP_ALIGN.RIGHT, MSO_ANCHOR.TOP, font_size, bone.text, font_color)
                 else:
-                   self.add_textbox(slide, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
+                    self.add_textbox(slide, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
                     ), const.VERTICAL_MARGIN, PP_ALIGN.LEFT, MSO_ANCHOR.TOP, font_size, bone.text, font_color)
 
             else:
@@ -102,16 +102,14 @@ class PPTXSaver():
                 MSO_SHAPE.LEFT_ARROW,
                 Pt(self.fishbone.main_bone[0].x), Pt(
                     self.fishbone.main_bone[0].y - 30),
-                Pt(self.fishbone.main_bone[1].x -
-                   self.fishbone.main_bone[0].x),
+                Pt(self.fishbone.main_bone[1].x - self.fishbone.main_bone[0].x),
                 Pt(60))
         else:
             main_bone_arrow = slide.shapes.add_shape(
                 MSO_SHAPE.RIGHT_ARROW,
                 Pt(self.fishbone.main_bone[0].x), Pt(
                     self.fishbone.main_bone[0].y - 30),
-                Pt(self.fishbone.main_bone[1].x -
-                   self.fishbone.main_bone[0].x),
+                Pt(self.fishbone.main_bone[1].x - self.fishbone.main_bone[0].x),
                 Pt(60))
 
         color = (int(const.MAIN_BONE_TEXT_COLOR[0] * 255), int(
@@ -123,8 +121,8 @@ class PPTXSaver():
         if self.fishbone.direction == 'left':
             self.add_textbox(
                 slide,
-                self.fishbone.main_bone[1].x -
-                200, self.fishbone.main_bone[1].y - 100,
+                self.fishbone.main_bone[1].x - 200,
+                self.fishbone.main_bone[1].y - 100,
                 200, 200, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE, 20, self.fishbone.text, main_bone_text_color, True)
         else:
             self.add_textbox(
@@ -158,19 +156,17 @@ class PPTXSaver():
                     Pt(width), Pt(12)
                 )
 
-  
-
                 if self.fishbone.direction == 'left':
                     dx = -(width / 2) * \
                         math.sin(math.radians(const.DEG)) - (width / 2)
-                    dy = (width / 2) * math.cos(math.radians(const.DEG))     
+                    dy = (width / 2) * math.cos(math.radians(const.DEG))
 
                     sub_bone_line.rotation = 90 + const.DEG
                 else:
                     dx = (width / 2) * \
                         math.sin(math.radians(const.DEG)) - (width / 2)
-                    dy = (width / 2) * math.cos(math.radians(const.DEG))                    
-                    
+                    dy = (width / 2) * math.cos(math.radians(const.DEG))
+
                     sub_bone_line.rotation = 90 - const.DEG
 
                 sub_bone_line.left = sub_bone_line.left + Pt(dx)

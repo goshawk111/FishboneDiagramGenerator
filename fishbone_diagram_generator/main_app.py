@@ -63,11 +63,11 @@ class SaveDialog(FloatLayout):
 
 class ToolBarButton(Button):
     """ ToolBar Button """
-    def buttonClicked(self, id):
-        Logger.info("[%s\t] %s was clicked.", self.__class__.__name__, id)
-        if id == 'Open':
+    def buttonClicked(self, button_id):
+        Logger.info("[%s\t] %s was clicked.", self.__class__.__name__, button_id)
+        if button_id == 'Open':
             self.parent.parent.show_load()
-        if id == 'Save':
+        if button_id == 'Save':
             self.parent.parent.popup_save_menu()
 
 
@@ -129,7 +129,7 @@ class RootWidget(Widget):
             content = SaveDialog(save=self.save_png, cancel=self.dismiss_popup)
 
         else:
-            content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)   
+            content = SaveDialog(save=self.save_svg, cancel=self.dismiss_popup)
 
         self._popup = Popup(title="Save Digaram",
                             content=content, size_hint=(0.9, 0.9))
@@ -170,6 +170,7 @@ class RootWidget(Widget):
 
 
 Builder.load_file('./fishbone_diagram_generator.kv')
+
 
 class DiagramView(StencilView):
     """ Widget to display Diagram """
