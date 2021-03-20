@@ -7,7 +7,7 @@ Fishbone Diagram Generator is a tool that can automatically generate Fishbone Di
 ## XML Files
 ```xml
 <?xml version="1.0" encoding="Shift_JIS"?>
-<Diagram style = "fishbone">
+<Diagram style = "fishbone" direction="right">
     <Effect>Problem</Effect>
     <Factor text="Human">
         <Topics text="Human Cause1">

@@ -10,8 +10,10 @@ import numpy as np
 import math
 import fishbone_diagram_generator.const as const
 
+
 class PNGSaver():
     """ Class for PNG file export """
+
     def __init__(self, filepath, painter):
         self.filepath = filepath
         self.fishbone = copy.deepcopy(painter.fishbone)
@@ -38,6 +40,11 @@ class PNGSaver():
             if min_y > sub_bone.rect.pos[1]:
                 min_y = sub_bone.rect.pos[1]
 
+        if self.fishbone.direction == 'left':
+            x = self.fishbone.main_bone[1].x - 400 - 50
+            if min_x > x:
+                min_x = x
+
         dx = -min_x + const.HORIZONTAL_MARGIN
         dy = -min_y + const.VERTICAL_MARGIN
 
@@ -55,15 +62,22 @@ class PNGSaver():
             if max_y < y:
                 max_y = y
 
-        x = self.fishbone.main_bone[1].x + 400 + 50
-        if max_x < x:
-            max_x = x
+        max_y = max_y + const.VERTICAL_MARGIN * 2
+
+        if self.fishbone.direction == 'left':
+            x = self.fishbone.main_bone[0].x + const.HORIZONTAL_MARGIN
+            if max_x < x:
+                max_x = x
+        else:
+            x = self.fishbone.main_bone[1].x + 400 + 50
+            if max_x < x:
+                max_x = x
 
         self.size = (int(max_x), int(max_y))
 
     def save(self):
         self.img = np.full(
-            (self.size[0], self.size[1], 3), 255, dtype=np.uint8)
+            (self.size[1], self.size[0], 3), 255, dtype=np.uint8)
 
         bone_color = (int(const.MAIN_SUB_BONE_COLOR[0] * 255), int(
             const.MAIN_SUB_BONE_COLOR[1] * 255), int(const.MAIN_SUB_BONE_COLOR[2] * 255))
@@ -73,16 +87,28 @@ class PNGSaver():
 
         cv2.line(self.img, (self.fishbone.main_bone[0].x, self.fishbone.main_bone[0].y), (
             self.fishbone.main_bone[1].x + 2, self.fishbone.main_bone[1].y), (bone_color[2], bone_color[1], bone_color[0]), 30, lineType=cv2.LINE_AA)
-        pts = np.array([[self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 35],
-                        [self.fishbone.main_bone[1].x + 45,
-                         self.fishbone.main_bone[1].y],
-                        [self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y + 35]], np.int32)
+
+        if self.fishbone.direction == 'left':
+            pts = np.array([[self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 35],
+                            [self.fishbone.main_bone[1].x - 45,
+                             self.fishbone.main_bone[1].y],
+                            [self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y + 35]], np.int32)
+        else:
+            pts = np.array([[self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 35],
+                            [self.fishbone.main_bone[1].x + 45,
+                             self.fishbone.main_bone[1].y],
+                            [self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y + 35]], np.int32)
+
         pts = pts.reshape((-1, 1, 2))
         cv2.fillPoly(self.img, [pts], (bone_color[2],
                                        bone_color[1], bone_color[0]), lineType=cv2.LINE_AA)
 
-        self.add_text_area(self.fishbone.text, self.fishbone.main_bone[1].x + 50,
-                           self.fishbone.main_bone[1].y - 100, 400, 200, 'left', 'middle', 20, (main_bone_text_color[2], main_bone_text_color[1], main_bone_text_color[0]))
+        if self.fishbone.direction == 'left':
+            self.add_text_area(self.fishbone.text, self.fishbone.main_bone[1].x - 50 - 400,
+                               self.fishbone.main_bone[1].y - 100, 400, 200, 'right', 'middle', 20, (main_bone_text_color[2], main_bone_text_color[1], main_bone_text_color[0]))
+        else:
+            self.add_text_area(self.fishbone.text, self.fishbone.main_bone[1].x + 50,
+                               self.fishbone.main_bone[1].y - 100, 400, 200, 'left', 'middle', 20, (main_bone_text_color[2], main_bone_text_color[1], main_bone_text_color[0]))
 
         index = 0
         side = ''
@@ -94,6 +120,9 @@ class PNGSaver():
                 dx = int(math.sin(math.radians(const.DEG)) * 15)
                 dy = int(math.cos(math.radians(const.DEG)) * 15)
 
+                if self.fishbone.direction == 'left':
+                    dx = -dx
+
                 self.add_text_area(
                     sub_bone.text,
                     sub_bone.bone[0].x - sub_bone.get_width() / 2,
@@ -102,6 +131,9 @@ class PNGSaver():
                 side = 'down'
                 dx = int(math.sin(math.radians(const.DEG)) * 15)
                 dy = int(-math.cos(math.radians(const.DEG)) * 15)
+
+                if self.fishbone.direction == 'left':
+                    dx = -dx
 
                 self.add_text_area(
                     sub_bone.text,
@@ -140,13 +172,21 @@ class PNGSaver():
                 self.add_text_area(bone.text, bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y + 5, bone.get_width(
                 ), const.VERTICAL_MARGIN, 'center', 'top', 10, (0, 0, 0))
         else:
-            if side == 'up':
-                self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
-                ), const.VERTICAL_MARGIN, 'left', 'top', 10, (0, 0, 0))
 
+            if side == 'up':
+                if self.fishbone.direction == 'left':
+                    self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'right', 'top', 10, (0, 0, 0))
+                else:
+                    self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'left', 'top', 10, (0, 0, 0))
             else:
-                self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN - 5, bone.get_width(
-                ), const.VERTICAL_MARGIN, 'left', 'bottom', 10, (0, 0, 0))
+                if self.fishbone.direction == 'left':
+                    self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN - 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'right', 'bottom', 10, (0, 0, 0))
+                else:
+                    self.add_text_area(bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN - 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'left', 'bottom', 10, (0, 0, 0))
 
         for child_bone in bone.child_bones:
             self.add_bone_text(child_bone, side)
@@ -174,7 +214,8 @@ class PNGSaver():
         draw = ImageDraw.Draw(imgPIL)
 
         if os.path.exists('fishbone_diagram_generator/fonts/ipaexg.ttf'):
-            fontPIL = ImageFont.truetype(font='fishbone_diagram_generator/fonts/ipaexg.ttf', size=size)
+            fontPIL = ImageFont.truetype(
+                font='fishbone_diagram_generator/fonts/ipaexg.ttf', size=size)
         else:
             fontPIL = ImageFont.truetype(font='Roboto-Regular.ttf', size=size)
 

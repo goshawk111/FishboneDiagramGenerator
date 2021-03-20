@@ -26,6 +26,7 @@ svgwrite.elementfactory.factoryelements['foreignObject'] = ForeignObject
 
 class SVGSaver():
     """ Class for SVG file export """
+
     def __init__(self, filepath, painter):
         self.filepath = filepath
         self.fishbone = copy.deepcopy(painter.fishbone)
@@ -42,6 +43,11 @@ class SVGSaver():
                 min_x = sub_bone.rect.pos[0]
             if min_y > sub_bone.rect.pos[1]:
                 min_y = sub_bone.rect.pos[1]
+
+        if self.fishbone.direction == 'left':
+            x = self.fishbone.main_bone[1].x - 400 - 50
+            if min_x > x:
+                min_x = x
 
         dx = -min_x + const.HORIZONTAL_MARGIN
         dy = -min_y + const.VERTICAL_MARGIN
@@ -60,9 +66,16 @@ class SVGSaver():
             if max_y < y:
                 max_y = y
 
-        x = self.fishbone.main_bone[1].x + 400 + 50
-        if max_x < x:
-            max_x = x
+        max_y = max_y + const.VERTICAL_MARGIN * 2
+
+        if self.fishbone.direction == 'left':
+            x = self.fishbone.main_bone[0].x + const.HORIZONTAL_MARGIN
+            if max_x < x:
+                max_x = x
+        else:
+            x = self.fishbone.main_bone[1].x + 400 + 50
+            if max_x < x:
+                max_x = x
 
         self.size = (max_x, max_y)
 
@@ -80,13 +93,22 @@ class SVGSaver():
             stroke=svgwrite.rgb(bone_color[0], bone_color[1], bone_color[2]),
             stroke_width='30'
         ))
-        dwg.add(dwg.polygon(
-            points=[(self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 35),
-                    (self.fishbone.main_bone[1].x + 45,
-                     self.fishbone.main_bone[1].y),
-                    (self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y + 35)],
-            fill=svgwrite.rgb(bone_color[0], bone_color[1], bone_color[2]), stroke='none')
-        )
+        if self.fishbone.direction == 'left':
+            dwg.add(dwg.polygon(
+                points=[(self.fishbone.main_bone[1].x + 3, self.fishbone.main_bone[1].y - 35),
+                        (self.fishbone.main_bone[1].x - 45 + 3,
+                         self.fishbone.main_bone[1].y),
+                        (self.fishbone.main_bone[1].x + 3, self.fishbone.main_bone[1].y + 35)],
+                fill=svgwrite.rgb(bone_color[0], bone_color[1], bone_color[2]), stroke='none')
+            )
+        else:
+            dwg.add(dwg.polygon(
+                points=[(self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y - 35),
+                        (self.fishbone.main_bone[1].x + 45,
+                         self.fishbone.main_bone[1].y),
+                        (self.fishbone.main_bone[1].x, self.fishbone.main_bone[1].y + 35)],
+                fill=svgwrite.rgb(bone_color[0], bone_color[1], bone_color[2]), stroke='none')
+            )
         dwg.add(dwg.style(
             ' .main_bone_style {font-size: 25px;color: RGB(' + str(main_bone_text_color[0]) + ',' + str(
                 main_bone_text_color[1]) + ',' + str(main_bone_text_color[2]) + ')} '
@@ -94,8 +116,12 @@ class SVGSaver():
                 bone_color[0]) + ',' + str(bone_color[1]) + ',' + str(bone_color[2]) + ')} '
             ' .sub_bone_text_style {font-size: 9px; line-height: 11px}'))
 
-        self.add_text_area(dwg, self.fishbone.text, self.fishbone.main_bone[1].x + 50,
-                           self.fishbone.main_bone[1].y - 100, 400, 200, 'left', 'middle', 'main_bone_style')
+        if self.fishbone.direction == 'left':
+            self.add_text_area(dwg, self.fishbone.text, self.fishbone.main_bone[1].x - 50 - 400,
+                               self.fishbone.main_bone[1].y - 100, 400, 200, 'right', 'middle', 'main_bone_style')
+        else:
+            self.add_text_area(dwg, self.fishbone.text, self.fishbone.main_bone[1].x + 50,
+                               self.fishbone.main_bone[1].y - 100, 400, 200, 'left', 'middle', 'main_bone_style')
 
         index = 0
         side = ''
@@ -107,6 +133,9 @@ class SVGSaver():
                 dx = math.sin(math.radians(const.DEG)) * 10
                 dy = math.cos(math.radians(const.DEG)) * 10
 
+                if self.fishbone.direction == 'left':
+                    dx = -dx
+
                 self.add_text_area(
                     dwg, sub_bone.text,
                     sub_bone.bone[0].x - sub_bone.get_width() / 2,
@@ -116,6 +145,9 @@ class SVGSaver():
                 dx = math.sin(math.radians(const.DEG)) * 10
                 dy = -math.cos(math.radians(const.DEG)) * 10
 
+                if self.fishbone.direction == 'left':
+                    dx = -dx
+                
                 self.add_text_area(
                     dwg, sub_bone.text,
                     sub_bone.bone[0].x - sub_bone.get_width() / 2,
@@ -169,12 +201,19 @@ class SVGSaver():
                 ), const.VERTICAL_MARGIN, 'center', 'top', 'sub_bone_text_style')
         else:
             if side == 'up':
-                self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
-                ), const.VERTICAL_MARGIN, 'left', 'top', 'sub_bone_text_style')
-
+                if self.fishbone.direction == 'left':
+                    self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'right', 'top', 'sub_bone_text_style')
+                else:
+                    self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y + 5, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'left', 'top', 'sub_bone_text_style')                    
             else:
-                self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN, bone.get_width(
-                ), const.VERTICAL_MARGIN, 'left', 'bottom', 'sub_bone_text_style')
+                if self.fishbone.direction == 'left':
+                    self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'right', 'bottom', 'sub_bone_text_style')
+                else:
+                    self.add_text_area(dwg, bone.text, bone.bone[0].x, bone.bone[0].y - const.VERTICAL_MARGIN, bone.get_width(
+                    ), const.VERTICAL_MARGIN, 'left', 'bottom', 'sub_bone_text_style')
 
         for child_bone in bone.child_bones:
             self.add_bone_text(child_bone, dwg, side)

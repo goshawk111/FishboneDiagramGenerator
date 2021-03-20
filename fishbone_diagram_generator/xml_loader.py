@@ -11,6 +11,9 @@ class XMLLoader():
             xml = file.read()
         self.root = ET.fromstring(xml)
 
+    def get_diagram_param(self, param):
+        return self.root.attrib[param]
+
     def get_effect(self):
         return self.root.find('Effect').text
 

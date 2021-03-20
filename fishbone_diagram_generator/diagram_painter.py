@@ -124,7 +124,10 @@ class DiagramPainter():
                 label_pos = Pos(
                     bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y - 4 - margin)
             else:
-                halign = 'left'
+                if self.fishbone.direction == 'left':
+                    halign = 'right'
+                else:
+                    halign = 'left'
                 valign = 'top'
                 label_pos = Pos(
                     bone.bone[0].x, bone.bone[0].y + const.VERTICAL_MARGIN + 3)
@@ -136,7 +139,10 @@ class DiagramPainter():
                 label_pos = Pos(
                     bone.bone[0].x - bone.get_width() / 2, bone.bone[0].y + const.VERTICAL_MARGIN + 4 + margin)
             else:
-                halign = 'left'
+                if self.fishbone.direction == 'left':
+                    halign = 'right'
+                else:
+                    halign = 'left'
                 valign = 'bottom'
                 label_pos = Pos(
                     bone.bone[0].x, bone.bone[0].y - 3)
@@ -152,8 +158,13 @@ class DiagramPainter():
             self.draw_sub_bone_string(index, child)
 
     def draw_main_bone(self, bone, dx, dy):
-        self.main_bone_text = Label(text=self.xml_loader.get_effect(
-        ), font_size=20, color=(.46, .13, .16), pos=self.get_pos(bone[1].x + dx + 60, bone[1].y + 50 + dy).get_tuple(), width=200, text_size=(200, None), halign='left', valign='top')
+
+        if self.fishbone.direction == 'left':
+            self.main_bone_text = Label(text=self.xml_loader.get_effect(
+            ), font_size=20, color=const.MAIN_BONE_TEXT_COLOR, pos=self.get_pos(bone[1].x + dx - 60 - 200, bone[1].y + 50 + dy).get_tuple(), width=200, text_size=(200, None), halign='right', valign='top')
+        else:
+            self.main_bone_text = Label(text=self.xml_loader.get_effect(
+            ), font_size=20, color=const.MAIN_BONE_TEXT_COLOR, pos=self.get_pos(bone[1].x + dx + 60, bone[1].y + 50 + dy).get_tuple(), width=200, text_size=(200, None), halign='left', valign='top')
 
         self.widget.add_widget(self.main_bone_text)
 
@@ -167,9 +178,14 @@ class DiagramPainter():
             self.main_bone = Line(
                 points=[p1.x, p1.y, p2.x, p2.y], width=const.MAIN_BONE_WIDTH)
 
-            ap1 = self.get_pos(bone[1].x + 50 + dx, bone[1].y + dy)
-            ap2 = self.get_pos(bone[1].x + 50 - 50 + dx, bone[1].y + 20 + dy)
-            ap3 = self.get_pos(bone[1].x + 50 - 50 + dx, bone[1].y - 20 + dy)
-
+            if self.fishbone.direction == 'left':
+                ap1 = self.get_pos(bone[1].x - 50 + dx, bone[1].y + dy)
+                ap2 = self.get_pos(bone[1].x - 50 + 50 + dx, bone[1].y + 20 + dy)
+                ap3 = self.get_pos(bone[1].x - 50 + 50 + dx, bone[1].y - 20 + dy)
+            else:
+                ap1 = self.get_pos(bone[1].x + 50 + dx, bone[1].y + dy)
+                ap2 = self.get_pos(bone[1].x + 50 - 50 + dx, bone[1].y + 20 + dy)
+                ap3 = self.get_pos(bone[1].x + 50 - 50 + dx, bone[1].y - 20 + dy)
+                
             self.main_bone_arrow = Triangle(
                 points=[ap1.x, ap1.y, ap2.x, ap2.y, ap3.x, ap3.y])

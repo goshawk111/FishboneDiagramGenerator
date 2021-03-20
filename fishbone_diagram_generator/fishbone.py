@@ -84,6 +84,23 @@ class FishBone():
             self.arrow[1] = Pos(self.bone[1].x - 10, self.bone[1].y + 5)
             self.arrow[2] = Pos(self.bone[1].x - 10, self.bone[1].y - 5)
 
+    def mirror_x(self, origin_x):
+        for b in self.bone:
+            dx = b.x - origin_x
+            b.x = origin_x - dx
+
+        if self.direction == 'horizontal':
+            p = self.bone[1]
+            self.bone[1] = self.bone[0]
+            self.bone[0] = p
+
+        for a in self.arrow:
+            dx = a.x - origin_x
+            a.x = origin_x - dx
+
+        for child in self.child_bones:
+            child.mirror_x(origin_x)
+
     def print_info(self):
         print('level:', self.level, 'direction:', self.direction,
               'bone:', self.bone[0].get_str() + ',' + self.bone[1].get_str(), 'text:', self.text)
@@ -103,18 +120,18 @@ class FishBone():
         for child in self.child_bones:
             child.print_all_child()
 
-    def mirror(self):
+    def mirror_y(self):
         self.bone[0].y = -self.bone[0].y
         self.bone[1].y = -self.bone[1].y
 
-        self.rect.pos[1] = self.rect.size[1] * 2
+        self.rect.pos[1] = self.rect.pos[1] + self.rect.size[1]
 
         self.arrow[0].y = -self.arrow[0].y
         self.arrow[1].y = -self.arrow[1].y
         self.arrow[2].y = -self.arrow[2].y
 
         for child in self.child_bones:
-            child.mirror()
+            child.mirror_y()
 
     def offset(self, offset_x, offset_y):
         self.bone[0].x = self.bone[0].x + offset_x

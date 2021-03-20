@@ -20,6 +20,7 @@ class FishBoneGenerator():
         self.vertical_min_y = 0
         self.min_x = 0
         self.min_y = 0
+        self.direction = xml_loader.get_diagram_param('direction')
 
     def create(self):
         root = self.xml_loader.get_factor()
@@ -38,7 +39,7 @@ class FishBoneGenerator():
                 offset_up_x = offset_up_x + sub_bone.rect.size[0]
 
             else:
-                sub_bone.mirror()
+                sub_bone.mirror_y()
                 sub_bone.offset(sub_bone.rect.size[0], sub_bone.rect.size[1])
                 sub_bone.offset(
                     const.DIAGRAM_X - sub_bone.rect.size[0] - offset_down_x, const.DIAGRAM_Y - sub_bone.rect.size[1] + (const.MAIN_BONE_WIDTH / 2 + 1))
@@ -54,7 +55,22 @@ class FishBoneGenerator():
         self.main_bone[0].y = const.DIAGRAM_Y
         self.main_bone[1].x = const.DIAGRAM_X + const.HORIZONTAL_MARGIN
         self.main_bone[1].y = const.DIAGRAM_Y
+
+        self.update_direction(self.direction)
+
         self.is_create = True
+
+    def update_direction(self, direction):
+        if direction == 'left':
+            origin_x = (self.main_bone[0].x + self.main_bone[1].x) / 2
+
+            for mb in self.main_bone:
+                dx = mb.x - origin_x
+                mb.x = origin_x - dx
+
+            for sub_bone in self.sub_bones:
+                sub_bone.mirror_x(origin_x)
+
 
     def find_horizontal_min_x(self, bone):
         if bone.direction == 'horizontal':
@@ -234,6 +250,7 @@ class FishBoneGenerator():
         self.add_vertical_bone(sub_bone)
         self.update_rect(sub_bone)
         self.update_arrow(sub_bone)
+        
         # sub_bone.print_all_child()
 
         return sub_bone
